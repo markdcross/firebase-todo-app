@@ -33,7 +33,8 @@ exports.postOneTodo = (request, response) => {
 
   const newTodoItem = {
     title: request.body.title,
-    body: request.body.body
+    body: request.body.body,
+    createdAt: new Date().toISOString()
   };
   db.collection('todos')
     .add(newTodoItem)
