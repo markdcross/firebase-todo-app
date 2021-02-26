@@ -8,18 +8,17 @@ dotenv.config();
 //* Todos
 const {
   getAllTodos,
+  getOneTodo,
   postOneTodo,
   deleteTodo,
   editTodo
 } = require('./APIs/todos');
 
-app.get('/todos', getAllTodos);
-
-app.post('/todo', postOneTodo);
-
-app.delete('/todo/:todoId', deleteTodo);
-
-app.put('/todo/:todoId', editTodo);
+app.get('/todos', auth, getAllTodos);
+app.get('/todo/:todoId', auth, getOneTodo);
+app.post('/todo', auth, postOneTodo);
+app.delete('/todo/:todoId', auth, deleteTodo);
+app.put('/todo/:todoId', auth, editTodo);
 
 //* Users
 const {

@@ -22,6 +22,23 @@ exports.getAllTodos = (request, response) => {
     });
 };
 
+exports.getOneTodo = (request, response) => {
+  const document = db.doc(`/todos/${request.params.todoId}`);
+  document
+    .get()
+    .then(doc => {
+      const todoItem = {
+        title: doc.data().title,
+        body: doc.data().body
+      };
+      return response.json(todoItem);
+    })
+    .catch(err => {
+      console.error(err);
+      return response.status(500).json({ error: err.code });
+    });
+};
+
 exports.postOneTodo = (request, response) => {
   if (request.body.body.trim() === '') {
     return response.status(400).json({ body: 'Must not be empty' });
