@@ -3,6 +3,7 @@ const { db } = require('../util/admin');
 exports.getAllTodos = (request, response) => {
   db.collection('todos')
     .orderBy('createdAt', 'desc')
+    .where('username', '==', request.user.username)
     .get()
     .then(data => {
       let todos = [];
@@ -27,6 +28,9 @@ exports.getOneTodo = (request, response) => {
   document
     .get()
     .then(doc => {
+      if (doc.data().username !== request.user.username) {
+        return response.status(403).json({ error: 'UnAuthorized' });
+      }
       const todoItem = {
         title: doc.data().title,
         body: doc.data().body
@@ -51,6 +55,7 @@ exports.postOneTodo = (request, response) => {
   const newTodoItem = {
     title: request.body.title,
     body: request.body.body,
+    username: request.user.username,
     createdAt: new Date().toISOString()
   };
   db.collection('todos')
@@ -73,6 +78,9 @@ exports.deleteTodo = (request, response) => {
     .then(doc => {
       if (!doc.exists) {
         return response.status(404).json({ error: 'Todo not found' });
+      }
+      if (doc.data().username !== request.user.username) {
+        return response.status(403).json({ error: 'UnAuthorized' });
       }
       return document.delete();
     })
